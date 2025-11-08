@@ -1,8 +1,9 @@
-# Write a polished README.md for the Super Nova n8n chatbot workflows
-readme = r"""# Super Nova — Telegram LLM Chatbot (n8n)
+# Super Nova — Telegram LLM Chatbot (n8n)
 
 **Status:** Hackathon prototype (mix of working, partial, and draft workflows)  
 **Team:** Super Nova
+**Hackathon:** Forge Hackathon 2024
+**Members:** Carlota , Libero, Mehmet
 
 ## TL;DR
 A Telegram-first customer-support chatbot in n8n. Users message (voice or text), we transcribe audio, keep short-term memory, query an LLM to extract intent + slots (PolicyID, action), route the flow, validate against Airtable, and respond. Extras include an address-existence check via a maps API (prototype) and a sentiment analysis spike (prototype).
@@ -32,7 +33,6 @@ Each JSON file is an importable n8n workflow:
 6) **sentiment analysis v1.json** — sentiment spike  
    - Telegram + audio/text handling skeleton intended to host a sentiment scorer to adapt the persona/tone. (Not wired into the main router yet.)
 
-> ⚠️ Because this is a hackathon build, several flows are intentionally “fake it till you make it”: prompts steer the LLM to emit the JSON we want; the map check is a POC; the sentiment pipeline is a draft.
 
 ---
 
