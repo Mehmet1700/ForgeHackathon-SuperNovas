@@ -5,6 +5,8 @@
 **Hackathon:** Forge Hackathon 2024
 **Members:** Carlota , Libero, Mehmet
 
+Link to the Github repo: [Super Nova GitHub](https://github.com/Mehmet1700/ForgeHackathon-SuperNovas?tab=readme-ov-file)
+
 ## TL;DR
 A Telegram-first customer-support chatbot in n8n. Users message (voice or text), we transcribe audio, keep short-term memory, query an LLM to extract intent + slots (PolicyID, action), route the flow, validate against Airtable, and respond. Extras include an address-existence check via a maps API (prototype) and a sentiment analysis spike (prototype).
 
