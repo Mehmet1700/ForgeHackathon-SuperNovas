@@ -8,6 +8,8 @@
 ## TL;DR
 A Telegram-first customer-support chatbot in n8n. Users message (voice or text), we transcribe audio, keep short-term memory, query an LLM to extract intent + slots (PolicyID, action), route the flow, validate against Airtable, and respond. Extras include an address-existence check via a maps API (prototype) and a sentiment analysis spike (prototype).
 
+You can already use it right now without setting up the n8n workflows: [Telegram Bot Link](https://t.me/SuperNovas2025Bot)
+
 ---
 
 ## What’s in this folder
