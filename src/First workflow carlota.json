@@ -1,0 +1,789 @@
+{
+  "name": "First workflow carlota",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        -16
+      ],
+      "id": "04ec25c4-5213-4a1d-9aae-70dcf3f933a3",
+      "name": "Telegram Trigger",
+      "webhookId": "c40832d3-2fa0-42e2-a7f4-78cb4bab8a61",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=Hello {{ $json.message.chat.first_name }}, we recieved your message.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        288
+      ],
+      "id": "e5123937-2e2d-4610-9e86-283ec7f18910",
+      "name": "Send a text message",
+      "webhookId": "a5546d29-43b1-4fdd-ba90-106795bd89b0",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "944a4c09-59fb-4b76-8150-5d2266489bbd",
+              "leftValue": "={{ $('Telegram Trigger').item.json.message.voice }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        272,
+        -80
+      ],
+      "id": "71954dc3-cbc6-445f-996d-c54ce89649a8",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "944a4c09-59fb-4b76-8150-5d2266489bbd",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        272,
+        144
+      ],
+      "id": "54e0cf8e-fecd-4fdd-9d57-a583ba4df10f",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=We recieved a audio message",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        -208
+      ],
+      "id": "291f1b54-27d9-4775-b4f1-2927ebf8bd93",
+      "name": "Debugging for Audio message",
+      "webhookId": "9a57aa8c-21ed-41f9-bf4f-060052b77fc7",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=You have sent a text message",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        528,
+        144
+      ],
+      "id": "59705f88-c0a7-469a-b62b-23bc942f98ff",
+      "name": "Debugging for Text Message",
+      "webhookId": "217fa176-657f-4514-a3dd-5b0d9ce070d7",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').item.json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        -208
+      ],
+      "id": "518d1530-e535-433e-a5f7-06fe557cd08e",
+      "name": "Get a file",
+      "webhookId": "168fc5ee-f632-4448-8d89-3f17dc6ad260",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        992,
+        -208
+      ],
+      "id": "74419d84-4312-4163-beac-a0a1a5a0e96f",
+      "name": "Transcribe a recording1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You get the following message from a customer:\"{{ $json.content.parts[0].text }}\"\n\nAdditionally you get the following information of the customer:\n\nfirst_name: {{ $('Telegram Trigger').item.json.message.chat.first_name }}\n\nusername: {{ $('Telegram Trigger').item.json.message.chat.username }}\n\nlanguage_code: {{ $('Telegram Trigger').item.json.message.from.language_code }}\n\ntelegram_id: {{ $('Telegram Trigger').item.json.message.from.id }}\n\nBased on the information write an answere to ask for the customerID. Only output the answere.\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        -208
+      ],
+      "id": "55619f15-b24e-4fe0-bd24-7e4b57557794",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "speech",
+        "operation": "speechToText",
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        992,
+        -32
+      ],
+      "id": "7f8b2898-5bbc-4a70-8802-70253136f522",
+      "name": "Transcribe audio or video",
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "qjuV8Nko1t3xBXrR",
+          "name": "ElevenLabs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}\n",
+        "text": "={{ $json.content.parts[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML",
+          "reply_to_message_id": 0,
+          "message_thread_id": 0
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1760,
+        -208
+      ],
+      "id": "f705941c-b32a-49fd-841c-d4dca6ab7b5a",
+      "name": "Ask for customerID",
+      "webhookId": "d4f0e917-9a86-4def-9f87-0f34067515e3",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "form",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1968,
+        -208
+      ],
+      "id": "3395b7a5-4d3d-4d6c-a491-81ab5cbf389d",
+      "name": "Wait",
+      "webhookId": "6a76ebef-c147-4810-8eb0-036610bf18a5"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "it worked",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2464,
+        -368
+      ],
+      "id": "5ef57467-b0b6-4610-bff9-c6d5567be6dc",
+      "name": "Send a text message1",
+      "webhookId": "2ae55077-e7e3-49d7-92df-aa0be6bed432",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "It didnt work",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2480,
+        -64
+      ],
+      "id": "3c7c3cec-1106-464d-9866-f74a2c3c913f",
+      "name": "Send a text message2",
+      "webhookId": "8c993ca6-08ee-45bd-b6fe-4ca64dc1b694",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\nfor item in _input.all():\n  item.json.myNewField = 'john.smith@email.com', 'CUS-001'\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        -400
+      ],
+      "id": "815e81d6-0a60-4724-9dec-3685fac5ed37",
+      "name": "Code in Python (Beta)"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDtkAbRrVkukzpm",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tblDtkAbRrVkukzpm"
+        },
+        "filterByFormula": "=AND(\n  {Email} = \"{{ $json.myNewField[0] }}\",\n  {Customer ID} = \"{{ $json.myNewField[1] }}\"\n)",
+        "returnAll": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2016,
+        -400
+      ],
+      "id": "2f4556a3-0327-475f-8904-e916bdac429a",
+      "name": "Check Client",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "53154366-f17d-4fa6-9446-80567c36139b",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2240,
+        -512
+      ],
+      "id": "6ff89798-7152-4300-b3ba-df6c0d208aa9",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "url": "https://gemini.google.com/",
+        "authentication": "predefinedCredentialType",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2464,
+        -544
+      ],
+      "id": "6a8dac8b-d1cd-419f-abc0-fdd96163f5b0",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You get the following message from a customer:\"{{ $json.myNewField[0] }}, {{ $json.myNewField[1] }},{{ $json.myNewField[2] }} \"\n\nBased on the information write answer if the adress does exist\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        -608
+      ],
+      "id": "288df36c-2410-4dd2-b80b-982d9900eacf",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\nfor item in _input.all():\n  item.json.myNewField = ['rua cooperativa piedense', '2805-126', 'Almada']\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        -736
+      ],
+      "id": "16d95e70-bcb6-44f0-8453-facd3d24a9c6",
+      "name": "Code in Python (Beta)1"
+    },
+    {
+      "parameters": {
+        "url": "https://nominatim.openstreetmap.org/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "format",
+              "value": "json"
+            },
+            {
+              "name": "q",
+              "value": "={{ $json.myNewField[2] }},{{ $json.myNewField[0] }},{{ $json.myNewField[1] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2160,
+        -768
+      ],
+      "id": "747c714c-bb1b-4f14-ba82-b695af3b5e41",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5c7f4d5d-6831-426d-8621-38a4513e5c90",
+              "leftValue": "={{ $json.place_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2368,
+        -768
+      ],
+      "id": "25fa3e94-c11e-49d9-b5a3-5c78478cce58",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Imagine you are a employee at a insurance company in the customer support and you are chatting with a customer. You get the following message of the customer:\n\n({{ $json.text }})\n{{ $('Telegram Trigger').item.json.message.text }}\n\nEvaluate the information you got from the customer. Use the memory which contains the previous answeres to check if it contains the PolicyID. The PolicyID has a Prefix \"POL-\". The user can write it with or without the Prefix, but we need it without.\n\nThe following steps need to be done in that order to continue:\nFirst you need the PolicyID, if you dont please only Output \"PolicyID\".\n\nIf you know the PolicyID and the customer want to change his address please Output in JSON Format like this: \n\n{\n  \"PolicyID\": \"POLICY_ID_HERE\",\n  \"Function\": \"ChangeAddress\"\n}\n\nIf you know the PolicyID and the customer want to claim a Policy, please Output in JSON Format like this: \n\n{\n  \"PolicyID\": \"POLICY_ID_HERE\",\n  \"Function\": \"ClaimPolicy\"\n}\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1088,
+        400
+      ],
+      "id": "263f3b29-5553-438d-b0ee-a1393cb2d8f8",
+      "name": "AI Agent"
+    }
+  ],
+  "pinData": {
+    "Message a model": [
+      {
+        "json": {
+          "content": {
+            "parts": [
+              {
+                "text": "Hallo memo, gerne helfe ich Ihnen bei der Adressänderung für Ihre Versicherung. Können Sie mir bitte Ihre Kunden-ID mitteilen?"
+              }
+            ],
+            "role": "model"
+          },
+          "finishReason": "STOP",
+          "index": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Debugging for Audio message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Debugging for Text Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Debugging for Audio message": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe audio or video",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Transcribe a recording1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Debugging for Text Message": {
+      "main": [
+        []
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Ask for customerID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask for customerID": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        []
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        [
+          {
+            "node": "Check Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Client": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4b8119e4-a930-46e6-a6e8-c5d5ee507ac1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2709b3404872c07d50d3a3f2e05261bfc74b8f94c3e697b5d635899ec2c8637b"
+  },
+  "id": "VMAVsvznyvSDfkOS",
+  "tags": []
+}

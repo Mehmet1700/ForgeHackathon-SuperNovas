@@ -1,0 +1,3316 @@
+{
+  "name": "Fixing the loop",
+  "nodes": [
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You get the following message from a customer:\"{{ $json.content.parts[0].text }}\"\n\nAdditionally you get the following information of the customer:\n\nfirst_name: {{ $('Telegram Trigger').item.json.message.chat.first_name }}\n\nusername: {{ $('Telegram Trigger').item.json.message.chat.username }}\n\nlanguage_code: {{ $('Telegram Trigger').item.json.message.from.language_code }}\n\ntelegram_id: {{ $('Telegram Trigger').item.json.message.from.id }}\n\nBased on the information write an answere to ask for the PolicyID. Only output the answere. Dont add some filler values\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        3584,
+        -1264
+      ],
+      "id": "9a0ea8ba-1948-4ba7-8c1d-65d16df6f79b",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.content.parts[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML",
+          "reply_to_message_id": 0,
+          "message_thread_id": 0
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3888,
+        -1264
+      ],
+      "id": "d6558f78-be91-4e08-82e4-6a75aa33a851",
+      "name": "Ask for customerID",
+      "webhookId": "6404f8c8-8f39-4150-ace7-1afeb45c3af6",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        -1504
+      ],
+      "id": "966b9f8d-afb0-4ac6-b1ea-99edec83fd74",
+      "name": "Transcribe a recording1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3360,
+        -1392
+      ],
+      "id": "3edfdcd3-8aa0-4ff8-aeb5-7e07fa857ff4",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "PolicyID",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a6114938-f50f-4319-b1b6-d776fe2774fc"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dd33692c-d9af-43d8-b710-02e1441fa2e2",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "ChangeAddress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "20748fd8-7815-4b1b-8f39-17fd0d46d46e",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "ClaimPolicy",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        3104,
+        -544
+      ],
+      "id": "54a61981-f592-460c-b6fb-0d45cb0e5f9e",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblqk1W4U1Lvyq8BM",
+          "mode": "list",
+          "cachedResultName": "Policies",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tblqk1W4U1Lvyq8BM"
+        },
+        "filterByFormula": "={Policy ID} = 'POL-{{ $('JSON to Variables').item.json.PolicyID }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3296,
+        -464
+      ],
+      "id": "6e58e201-bf08-459f-986f-dc087ec95659",
+      "name": "Search records",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f31d5e26-c4e4-4705-8d41-1d73e2702026",
+              "leftValue": "={{ $json['Policy ID'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3536,
+        -464
+      ],
+      "id": "de9fb9a0-b561-4292-b1e6-ab787e7796e8",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Thank you very much for your answere, but we couldn't find your policy-Number POL-{{ $('JSON to Variables').item.json.PolicyID }} in our Database. Please write it again.",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML",
+          "reply_to_message_id": 0,
+          "message_thread_id": 0
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3744,
+        64
+      ],
+      "id": "8bd31f32-571e-494b-ad1a-e734ec7105d6",
+      "name": "Negative: PolicyID Wrong",
+      "webhookId": "54685fde-472b-45d2-8805-2c02c157927c",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Imagine you are a employee at a insurance company in the customer support and you are chatting with a customer. You get the following message of the customer:\n\n({{ $json.text }})\n{{ $('Telegram Trigger').item.json.message.text }}\n\nYou need the Adress of the customer. If the message or the previous chat contains a possbile Adress, then please output a JSON in the following Format:\n\nIf you know the PolicyID and the customer want to change his address please Output in JSON Format like this: \n\n{\n  \"Street\": \"Street\",\n  \"City\": \"City\",\n  \"PostalCode\": \"PostalCode\",\n}\n\nIf you cant find anything, please Output \"NoAddress\"\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        3904,
+        0
+      ],
+      "id": "4efb64a0-6fd3-4d6d-863c-65a4fad15fe2",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3904,
+        240
+      ],
+      "id": "f1e613f5-98b8-4dcc-bd5c-4c6dbd1df322",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        4016,
+        256
+      ],
+      "id": "09ff117e-aeaa-48fa-aa3b-286e6d66a752",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "NoAddress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a6114938-f50f-4319-b1b6-d776fe2774fc"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d2f5896c-2a4b-4839-93a5-710625188a58",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        4240,
+        0
+      ],
+      "id": "c07123a6-3460-40e5-b138-409fa1336e24",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Please Input a valid Address",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML",
+          "reply_to_message_id": 0,
+          "message_thread_id": 0
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4496,
+        -160
+      ],
+      "id": "35819a30-ad3c-4400-861b-a42a539b03cc",
+      "name": "InputAddress",
+      "webhookId": "7a160489-ae71-429b-8aaf-3bc698d1a9c0",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Erwartet pro Item ein Feld `ai_output` (String ODER Objekt) + irgendwo eine PolicyID.\n// Gibt pro Item einen flachen JSON-Payload zurück:\n// { \"ChangeAddress\", Street, City, PostalCode }\n\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  return s\n    .replace(/^```(?:json)?\\s*/i, '')\n    .replace(/```$/, '');\n}\n\nfunction fixTrailingCommas(s) {\n  if (typeof s !== 'string') return s;\n  // Entfernt abschließende Kommata vor schließenden Klammern/Braces\n  return s.replace(/,\\s*([}\\]])/g, '$1');\n}\n\nfunction normalizeQuotes(s) {\n  if (typeof s !== 'string') return s;\n  // Smart Quotes → normale Anführungszeichen\n  return s.replace(/[“”]/g, '\"').replace(/[‘’]/g, \"'\");\n}\n\nfunction tryParseLenient(input) {\n  if (typeof input !== 'string') return input;\n  let s = input.trim();\n  s = stripCodeFences(s);\n  s = normalizeQuotes(s);\n  s = fixTrailingCommas(s);\n  try {\n    return JSON.parse(s);\n  } catch {\n    return null;\n  }\n}\n\nfunction extractFromLooseText(text) {\n  if (typeof text !== 'string') return { Street: '', City: '', PostalCode: '' };\n\n  const get = (patterns) => {\n    for (const p of patterns) {\n      const m = text.match(p);\n      if (m && m[1]) return m[1].trim();\n    }\n    return '';\n  };\n\n  const Street = get([\n    /\"Street\"\\s*:\\s*\"([^\"]+)\"/i,\n    /Street\\s*[:=]\\s*([^,\\n]+)\\b/i,\n    /\"address\"\\s*:\\s*\"([^\"]+)\"/i,\n    /address\\s*[:=]\\s*([^,\\n]+)\\b/i,\n  ]);\n\n  const City = get([\n    /\"City\"\\s*:\\s*\"([^\"]+)\"/i,\n    /City\\s*[:=]\\s*([^,\\n]+)\\b/i,\n    /\"town\"\\s*:\\s*\"([^\"]+)\"/i,\n    /town\\s*[:=]\\s*([^,\\n]+)\\b/i,\n  ]);\n\n  const PostalCode = get([\n    /\"PostalCode\"\\s*:\\s*\"([^\"]+)\"/i,\n    /PostalCode\\s*[:=]\\s*([A-Za-z0-9\\- ]+)/i,\n    /\"zip(code)?\"\\s*:\\s*\"([^\"]+)\"/i,\n    /zip(code)?\\s*[:=]\\s*([A-Za-z0-9\\- ]+)/i,\n    /\"plz\"\\s*:\\s*\"([^\"]+)\"/i,\n    /plz\\s*[:=]\\s*([A-Za-z0-9\\- ]+)/i,\n  ]);\n\n  return { Street, City, PostalCode };\n}\n\nfunction pickFirst(...vals) {\n  for (const v of vals) {\n    if (v !== undefined && v !== null && String(v).trim() !== '') return String(v).trim();\n  }\n  return '';\n}\n\nreturn items.map(item => {\n  const src = item.json.ai_output ?? item.json.output ?? item.json.ai ?? item.json; // wo die Agent-Antwort liegt\n\n  // PolicyID bestimmen (Pfad anpassen, falls nötig)\n  const policyFromContext = pickFirst(\n    item.json.policyId,\n    item.json.PolicyID,\n    (typeof src === 'object' && src) ? src.policyId : undefined,\n    (typeof src === 'object' && src) ? src.PolicyID : undefined,\n  );\n\n  let obj = null;\n\n  // A) Bereits Objekt?\n  if (src && typeof src === 'object' && ('Street' in src || 'City' in src || 'PostalCode' in src)) {\n    obj = src;\n  }\n\n  // B) JSON-String → lenient parsen\n  if (!obj && typeof src === 'string') {\n    const parsed = tryParseLenient(src);\n    if (parsed && typeof parsed === 'object') obj = parsed;\n  }\n\n  // C) Fallback: Freitext extrahieren\n  let Street = '';\n  let City = '';\n  let PostalCode = '';\n\n  if (obj) {\n    // Synonyme/alternative Keys berücksichtigen\n    Street = pickFirst(obj.Street, obj.street, obj.Address, obj.address, obj.streetAddress, obj[\"Street Address\"]);\n    City = pickFirst(obj.City, obj.city, obj.Town, obj.town);\n    PostalCode = pickFirst(obj.PostalCode, obj.postalCode, obj.zip, obj.zipcode, obj.ZIP, obj.plz, obj.PLZ);\n  } else {\n    const text = typeof src === 'string' ? src : String(src ?? '');\n    const ext = extractFromLooseText(text);\n    Street = ext.Street;\n    City = ext.City;\n    PostalCode = ext.PostalCode;\n  }\n\n  // Minimal-Validierung\n  if (!Street || !City || !PostalCode) {\n    // Für Debugging hilfreich:\n    // throw new Error(`Adresse unvollständig. Street=\"${Street}\", City=\"${City}\", PostalCode=\"${PostalCode}\". Quelle: ${typeof src === 'string' ? src.slice(0, 500) : JSON.stringify(src)}`);\n    // Statt Fehler: leere Felder zulassen – passe nach Bedarf an:\n  }\n\n\n  return {\n    json: {\n      Street,\n      City,\n      PostalCode\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4448,
+        144
+      ],
+      "id": "762cd423-2d26-4ed1-abe9-796bb1a7a120",
+      "name": "Put JSON into variables"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDtkAbRrVkukzpm",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tblDtkAbRrVkukzpm"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Address": "={{ $('Put JSON into variables').item.json.Street }}",
+            "City": "={{ $('Put JSON into variables').item.json.City }}",
+            "Zip_Code": "={{ $('Put JSON into variables').item.json.PostalCode }}",
+            "Customer ID": "={{ $('Search records').item.json['Customer ID'] }}"
+          },
+          "matchingColumns": [
+            "Customer ID"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Zip_Code",
+              "displayName": "Zip_Code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "City",
+              "displayName": "City",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language Preference",
+              "displayName": "Language Preference",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "English",
+                  "value": "English"
+                },
+                {
+                  "name": "Spanish",
+                  "value": "Spanish"
+                },
+                {
+                  "name": "Mandarin",
+                  "value": "Mandarin"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Active Policies",
+              "displayName": "Active Policies",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Customer ID",
+              "displayName": "Customer ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        4704,
+        160
+      ],
+      "id": "c9572732-6944-472c-9716-2f28173ef564",
+      "name": "Update record",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=We have changed your Address to:\n{{ $json.fields.Address }}\n{{ $json.fields.City }}\n{{ $json.fields.Zip_Code }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML",
+          "reply_to_message_id": 0,
+          "message_thread_id": 0
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4976,
+        160
+      ],
+      "id": "c8830da2-23e5-4124-802c-bdbc50739ece",
+      "name": "Confirmation of Changing the Address",
+      "webhookId": "d722c90c-2405-4a1e-b11d-0aadd9d61b84",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Code (JavaScript) node in n8n\n// Erwartet pro Item ein Feld `ai_output` (String ODER Objekt).\n// Gibt pro Item ein JSON-Objekt mit { PolicyID, Function } zurück.\n\nfunction tryParseJsonMaybe(str) {\n  if (typeof str !== 'string') return str;\n  try { return JSON.parse(str); } catch { return null; }\n}\n\nfunction extractFromLooseText(text) {\n  if (typeof text !== 'string') return { PolicyID: '', Function: '' };\n\n  // Beispiel: {\"PolicyID\": \"92863673\", \"Function\": \"ChangeAddress\"} ohne sauberes JSON\n  // oder: PolicyID: 92863673; Function: ChangeAddress\n  // oder: Zeilenweise Ausgabe etc.\n\n  // 1) PolicyID: Zahl oder alphanumerisch\n  const idMatch =\n    text.match(/\"PolicyID\"\\s*:\\s*\"([^\"]+)\"/i) ||\n    text.match(/PolicyID\\s*[:=]\\s*([A-Za-z0-9_-]+)/i);\n\n  // 2) Function: Wort oder String\n  const fnMatch =\n    text.match(/\"Function\"\\s*:\\s*\"([^\"]+)\"/i) ||\n    text.match(/Function\\s*[:=]\\s*([A-Za-z0-9_-]+)/i);\n\n  return {\n    PolicyID: idMatch ? idMatch[1] : '',\n    Function: fnMatch ? fnMatch[1] : '',\n  };\n}\n\nreturn items.map(item => {\n  const src = item.json.ai_output ?? item.json.output ?? item.json; // wo deine Antwort liegt\n\n  // Fall A: bereits Objekt mit PolicyID/Function\n  if (src && typeof src === 'object' && ('PolicyID' in src || 'Function' in src)) {\n    const PolicyID = String(src.PolicyID ?? '').trim();\n    const FunctionName = String(src.Function ?? '').trim();\n    if (!PolicyID) {\n      throw new Error('PolicyID ist leer (Objekt-Fall). Prüfe die Quelle von ai_output.');\n    }\n    return { json: { PolicyID, Function: FunctionName || 'ChangeAddress' } };\n  }\n\n  // Fall B: JSON-String -> parsen\n  const parsed = tryParseJsonMaybe(src);\n  if (parsed && typeof parsed === 'object') {\n    const PolicyID = String(parsed.PolicyID ?? '').trim();\n    const FunctionName = String(parsed.Function ?? '').trim();\n    if (!PolicyID) {\n      throw new Error('PolicyID ist leer (geparster JSON-String).');\n    }\n    return { json: { PolicyID, Function: FunctionName || 'ChangeAddress' } };\n  }\n\n  // Fall C: Fallback – rohe Textausgabe robust parsen\n  const text = typeof src === 'string' ? src : String(src ?? '');\n  const { PolicyID, Function: FunctionName } = extractFromLooseText(text);\n\n  if (!PolicyID) {\n    // letzte Rettung: vielleicht liegt die ID in einem anderen Feld (z. B. customerId/policyId)\n    const fallbackId = item.json.policyId ?? item.json.customerId ?? '';\n    if (!fallbackId) {\n      // Fürs Debugging alles mitschicken\n      throw new Error(`Konnte PolicyID nicht extrahieren. Quelle: ${JSON.stringify(src)}`);\n    }\n    return { json: { PolicyID: String(fallbackId), Function: FunctionName || 'ChangeAddress' } };\n  }\n\n  return { json: { PolicyID, Function: FunctionName || 'ChangeAddress' } };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3184,
+        -464
+      ],
+      "id": "1109b598-df33-4715-ad88-4085b7958c96",
+      "name": "JSON to Variables"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Thank you very much for supplying your PolicyID with the number POL-{{ $('JSON to Variables').item.json.PolicyID }}. We found the following Policy Typ: {{ $('Search records').item.json['Policy Type'] }}.",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML",
+          "reply_to_message_id": 0,
+          "message_thread_id": 0
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3792,
+        -352
+      ],
+      "id": "bf0d0acd-930f-4237-92ee-9a266b5d7155",
+      "name": "Debugging Positive: PolicyID found",
+      "webhookId": "95b5bc9f-b269-4840-934d-df26380aadb6",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Code (JavaScript) node in n8n\n// Erwartet pro Item ein Feld `ai_output` (String ODER Objekt).\n// Gibt pro Item ein JSON-Objekt mit { PolicyID, Function } zurück.\n\nfunction tryParseJsonMaybe(str) {\n  if (typeof str !== 'string') return str;\n  try { return JSON.parse(str); } catch { return null; }\n}\n\nfunction extractFromLooseText(text) {\n  if (typeof text !== 'string') return { PolicyID: '', Function: '' };\n\n  // Beispiel: {\"PolicyID\": \"92863673\", \"Function\": \"ChangeAddress\"} ohne sauberes JSON\n  // oder: PolicyID: 92863673; Function: ChangeAddress\n  // oder: Zeilenweise Ausgabe etc.\n\n  // 1) PolicyID: Zahl oder alphanumerisch\n  const idMatch =\n    text.match(/\"PolicyID\"\\s*:\\s*\"([^\"]+)\"/i) ||\n    text.match(/PolicyID\\s*[:=]\\s*([A-Za-z0-9_-]+)/i);\n\n  // 2) Function: Wort oder String\n  const fnMatch =\n    text.match(/\"Function\"\\s*:\\s*\"([^\"]+)\"/i) ||\n    text.match(/Function\\s*[:=]\\s*([A-Za-z0-9_-]+)/i);\n\n  return {\n    PolicyID: idMatch ? idMatch[1] : '',\n    Function: fnMatch ? fnMatch[1] : '',\n  };\n}\n\nreturn items.map(item => {\n  const src = item.json.ai_output ?? item.json.output ?? item.json; // wo deine Antwort liegt\n\n  // Fall A: bereits Objekt mit PolicyID/Function\n  if (src && typeof src === 'object' && ('PolicyID' in src || 'Function' in src)) {\n    const PolicyID = String(src.PolicyID ?? '').trim();\n    const FunctionName = String(src.Function ?? '').trim();\n    if (!PolicyID) {\n      throw new Error('PolicyID ist leer (Objekt-Fall). Prüfe die Quelle von ai_output.');\n    }\n    return { json: { PolicyID, Function: FunctionName || 'ChangeAddress' } };\n  }\n\n  // Fall B: JSON-String -> parsen\n  const parsed = tryParseJsonMaybe(src);\n  if (parsed && typeof parsed === 'object') {\n    const PolicyID = String(parsed.PolicyID ?? '').trim();\n    const FunctionName = String(parsed.Function ?? '').trim();\n    if (!PolicyID) {\n      throw new Error('PolicyID ist leer (geparster JSON-String).');\n    }\n    return { json: { PolicyID, Function: FunctionName || 'ChangeAddress' } };\n  }\n\n  // Fall C: Fallback – rohe Textausgabe robust parsen\n  const text = typeof src === 'string' ? src : String(src ?? '');\n  const { PolicyID, Function: FunctionName } = extractFromLooseText(text);\n\n  if (!PolicyID) {\n    // letzte Rettung: vielleicht liegt die ID in einem anderen Feld (z. B. customerId/policyId)\n    const fallbackId = item.json.policyId ?? item.json.customerId ?? '';\n    if (!fallbackId) {\n      // Fürs Debugging alles mitschicken\n      throw new Error(`Konnte PolicyID nicht extrahieren. Quelle: ${JSON.stringify(src)}`);\n    }\n    return { json: { PolicyID: String(fallbackId), Function: FunctionName || 'ChangeAddress' } };\n  }\n\n  return { json: { PolicyID, Function: FunctionName || ' ClaimPolicy' } };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2944,
+        512
+      ],
+      "id": "870c224d-5708-418b-969f-7854995edc3c",
+      "name": "JSON to Variables1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Imagine you are a employee at a insurance company in the customer support and you are chatting with a customer. You get the following message of the customer:\n\n({{ $json.text }})\n{{ $('Telegram Trigger').item.json.message.text }}\n\nYou need the Adress of the customer. If the message or the previous chat contains a possbile Adress, then please output a JSON in the following Format:\n\nIf you know the PolicyID and the customer want to change his address please Output in JSON Format like this: \n\n{\n  \"Street\": \"Street\",\n  \"City\": \"City\",\n  \"PostalCode\": \"PostalCode\",\n}\n\nIf you cant find anything, please Output \"NoAddress\"\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        3328,
+        736
+      ],
+      "id": "6cd515ae-62d8-433b-8791-e60a4a4fc6f8",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3328,
+        976
+      ],
+      "id": "a7409acf-2b20-4ed0-a23c-f90c35fef274",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        3440,
+        992
+      ],
+      "id": "20cfef82-a2f0-426b-949c-821bab8e340e",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "NoAddress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a6114938-f50f-4319-b1b6-d776fe2774fc"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d2f5896c-2a4b-4839-93a5-710625188a58",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        3664,
+        736
+      ],
+      "id": "9748ed75-1aef-4402-9981-604f81ed3446",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Imagine you are a employee at a insurance company in the customer support and you are chatting with a customer. You get the following message of the customer:\n\n({{ $json.text }})\n{{ $('Telegram Trigger').item.json.message.text }}\n\nYou need the Adress of the customer. If the message or the previous chat contains a possbile Adress, then please output a JSON in the following Format:\n\nIf you know the PolicyID and the customer want to change his address please Output in JSON Format like this: \n\n{\n  \"Street\": \"Street\",\n  \"City\": \"City\",\n  \"PostalCode\": \"PostalCode\",\n}\n\nIf you cant find anything, please Output \"NoAddress\"\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        4144,
+        720
+      ],
+      "id": "9f0dcd4e-b3b7-4446-b68f-f16b4c4b207b",
+      "name": "AI Agent3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        4144,
+        960
+      ],
+      "id": "b8c2cd25-8a42-4b21-97dd-87aac7971c4d",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        4256,
+        976
+      ],
+      "id": "5245ac72-655b-4c54-92d6-e7533658a94c",
+      "name": "Simple Memory3"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "NoAddress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a6114938-f50f-4319-b1b6-d776fe2774fc"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d2f5896c-2a4b-4839-93a5-710625188a58",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        4480,
+        720
+      ],
+      "id": "f1422190-dbe8-424c-acb3-cad215b3c893",
+      "name": "Switch3"
+    },
+    {
+      "parameters": {
+        "url": "https://api.geoapify.com/v1/geocode/search?text=38%20Upper%20Montagu%20Street%2C%20Westminster%20W1H%201LJ%2C%20United%20Kingdom&apiKey=a9c396f180694fe7bd24425b8ac6dbb5",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        5024,
+        768
+      ],
+      "id": "c22ab0f4-3c19-4aef-948e-44c4f20bdac7",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -640,
+        464
+      ],
+      "id": "ce65719c-b191-4361-9903-dbbb6c33c8e6",
+      "name": "Wait",
+      "webhookId": "93303454-b543-4500-9c74-0f4b89635208"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatID }}",
+        "text": "=Execution 2 started",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": true
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1264,
+        448
+      ],
+      "id": "e3d66bfb-2d5a-49e6-a322-d8e54faef569",
+      "name": "Send a text message",
+      "webhookId": "2849aff1-0cdd-42c4-a8c8-7f7ca75c7ea7",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Merge').item.json.chatID }}",
+        "text": "=Debugging2\n\n{{ $json.user_message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        464
+      ],
+      "id": "1a219606-2d2f-47aa-a7ca-8f258947e98d",
+      "name": "Debuggin",
+      "webhookId": "33736cf3-a10b-432d-a32a-86be4ec1c25e",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cf834600-2b9f-414a-805b-a99cb41c66be",
+              "name": "resumeUrl",
+              "value": "={{ $execution.resumeUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1040,
+        448
+      ],
+      "id": "6ce7c922-7afe-4d63-9b96-4cb5091435f6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl1D2LY3VvpkNKwM",
+          "mode": "list",
+          "cachedResultName": "Session",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tbl1D2LY3VvpkNKwM"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ChatID": "={{ $('Merge').item.json.chatID }}",
+            "ResumeURL": "={{ $json.resumeUrl }}",
+            "State": "waiting"
+          },
+          "matchingColumns": [
+            "ChatID"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "ChatID",
+              "displayName": "ChatID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "State",
+              "displayName": "State",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ResumeURL",
+              "displayName": "ResumeURL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "updateAllMatches": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -864,
+        448
+      ],
+      "id": "baf614f0-0056-43f8-9d60-37cef1ef381e",
+      "name": "Create or update a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nreturn [{ json: { chat_id: body.chatId, user_message: (body.text || '').trim(), raw: body } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -368,
+        464
+      ],
+      "id": "46406654-d7d0-4736-8fff-268f42d9b280",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "chatId",
+              "type": "any"
+            },
+            {
+              "name": "Text",
+              "type": "any"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2128,
+        368
+      ],
+      "id": "178f7018-c6dc-405d-a8fd-5e82144e14fc",
+      "name": "When Executed by Another Workflow",
+      "alwaysOutputData": false,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2128,
+        144
+      ],
+      "id": "b54b4e2d-ff66-48a1-bbdc-3edaeab33e85",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eca87abf-6d48-4c3d-990b-64897c9a201f",
+              "name": "chatID",
+              "value": 475230644,
+              "type": "number"
+            },
+            {
+              "id": "3629e9be-2b3b-43c5-8eff-4252f4aba2b1",
+              "name": "Text",
+              "value": "Hey I am Mehmet, and I want to change my Address. My Policy Number is 001",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1904,
+        160
+      ],
+      "id": "c638f3b8-0f07-4b3e-8722-1637d1163bad",
+      "name": "DEV INPUT"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1696,
+        288
+      ],
+      "id": "ba2f5d0d-2dc2-40bf-83af-64b3e401fee4",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node\n// Input: item.json.ai_output (string OR object)  [fallbacks: item.json.output, item.json]\n// Output: { PolicyID: string, Function: string }  (null/undefined -> '')\n\nfunction stripCodeFence(s) {\n  if (typeof s !== 'string') return s;\n  // remove ```json ... ``` or ``` ... ```\n  return s.trim()\n    .replace(/^```(?:json)?\\s*/i, '')\n    .replace(/```$/i, '')\n    .trim();\n}\n\nfunction tryParseJsonMaybe(src) {\n  if (typeof src !== 'string') return null;\n  const txt = stripCodeFence(src);\n  try { return JSON.parse(txt); } catch { return null; }\n}\n\nfunction sanitize(val) {\n  if (val === null || val === undefined) return '';\n  const s = String(val).trim();\n  // handle literal \"null\" or \"undefined\" strings from some LLMs\n  if (/^(null|undefined)$/i.test(s)) return '';\n  return s;\n}\n\nfunction normalizeFunctionName(fn) {\n  const raw = sanitize(fn);\n  if (!raw) return '';\n  const key = raw.toLowerCase().replace(/[\\s_-]+/g, '');\n  // common variants / typos\n  const addressSet = new Set([\n    'changeadress','changeaddress','addresschange','changeofaddress','updateaddress','updateadress'\n  ]);\n  if (addressSet.has(key)) return 'ChangeAddress';\n  return raw; // leave other functions as-is\n}\n\nfunction extractFromLooseText(text) {\n  if (typeof text !== 'string') return { PolicyID: '', Function: '' };\n  const t = stripCodeFence(text);\n\n  // PolicyID patterns\n  const idMatch =\n    t.match(/\"PolicyID\"\\s*:\\s*\"([^\"]*)\"/i) ||\n    t.match(/PolicyID\\s*[:=]\\s*([A-Za-z0-9_-]*)/i) ||\n    t.match(/policy\\s*id\\s*[:=]\\s*([A-Za-z0-9_-]*)/i);\n\n  // Function/Cause/Action patterns\n  const fnMatch =\n    t.match(/\"Function\"\\s*:\\s*\"([^\"]*)\"/i) ||\n    t.match(/Function\\s*[:=]\\s*([A-Za-z0-9 _-]*)/i) ||\n    t.match(/\"Cause\"\\s*:\\s*\"([^\"]*)\"/i) ||\n    t.match(/Cause\\s*[:=]\\s*([A-Za-z0-9 _-]*)/i) ||\n    t.match(/\"Action\"\\s*:\\s*\"([^\"]*)\"/i) ||\n    t.match(/Action\\s*[:=]\\s*([A-Za-z0-9 _-]*)/i);\n\n  let PolicyID = sanitize(idMatch ? idMatch[1] : '');\n  let FunctionName = normalizeFunctionName(fnMatch ? fnMatch[1] : '');\n  return { PolicyID, Function: FunctionName };\n}\n\nreturn items.map(item => {\n  const src = item.json.ai_output ?? item.json.output ?? item.json;\n\n  // A) Already an object\n  if (src && typeof src === 'object' && !Array.isArray(src)) {\n    let PolicyID = sanitize(src.PolicyID);\n    let FunctionName = sanitize(src.Function ?? src.Cause ?? src.Action);\n    FunctionName = normalizeFunctionName(FunctionName);\n\n    // optional fallback IDs if you stash them elsewhere\n    if (!PolicyID) {\n      PolicyID = sanitize(item.json.policyId ?? item.json.customerId);\n    }\n    return { json: { PolicyID, Function: FunctionName } };\n  }\n\n  // B) String that might be JSON (possibly with ```json fences)\n  const parsed = tryParseJsonMaybe(src);\n  if (parsed && typeof parsed === 'object') {\n    let PolicyID = sanitize(parsed.PolicyID);\n    let FunctionName = sanitize(parsed.Function ?? parsed.Cause ?? parsed.Action);\n    FunctionName = normalizeFunctionName(FunctionName);\n\n    if (!PolicyID) {\n      PolicyID = sanitize(item.json.policyId ?? item.json.customerId);\n    }\n    return { json: { PolicyID, Function: FunctionName } };\n  }\n\n  // C) Fallback: loose text\n  const text = typeof src === 'string' ? src : String(src ?? '');\n  let { PolicyID, Function: FunctionName } = extractFromLooseText(text);\n\n  if (!PolicyID) {\n    PolicyID = sanitize(item.json.policyId ?? item.json.customerId);\n  }\n  return { json: { PolicyID, Function: FunctionName } };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -976,
+        -160
+      ],
+      "id": "d0bb273b-7d2c-4e9c-9dac-3ce943e1a212",
+      "name": "JSON to Variables2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Imagine you are a employee at a insurance company in the customer support and you are chatting with a customer. The Customer answered and you formatted in a JSON but some values are missing: Ask the customer for the missing values. The JSON looks like this:\n\n{{ $('JSON COLLECTOR').item.json.output }}\n\nOutput only the answere which will be send to the customer.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -992,
+        16
+      ],
+      "id": "e18bd5ff-e34c-4241-8ec7-d0a88e13d4fc",
+      "name": "AI Agent5"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -992,
+        160
+      ],
+      "id": "e3ae90fe-6c7a-493b-963e-a1250cdb677f",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Merge').item.json.chatId }}",
+        "contextWindowLength": 3
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -896,
+        160
+      ],
+      "id": "52398058-ba1c-4301-91f9-1942beec45b4",
+      "name": "Simple Memory5"
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        64
+      ],
+      "id": "ac9b8f71-728d-429e-8f0e-41bfbe412645",
+      "name": "Wait1",
+      "webhookId": "93303454-b543-4500-9c74-0f4b89635208"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl1D2LY3VvpkNKwM",
+          "mode": "list",
+          "cachedResultName": "Session",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tbl1D2LY3VvpkNKwM"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ResumeURL": "={{ $json.resumeUrl }}",
+            "State": "waiting",
+            "ChatID": "={{ $('Merge').item.json.chatId }}"
+          },
+          "matchingColumns": [
+            "ChatID"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "ChatID",
+              "displayName": "ChatID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "State",
+              "displayName": "State",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ResumeURL",
+              "displayName": "ResumeURL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "updateAllMatches": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        64
+      ],
+      "id": "e6852113-0eb8-4db5-96c9-2bd91ce94d13",
+      "name": "Create or update a record1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cf834600-2b9f-414a-805b-a99cb41c66be",
+              "name": "resumeUrl",
+              "value": "={{ $execution.resumeUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -432,
+        64
+      ],
+      "id": "d8a6dd42-7dfd-4d08-8a9b-ea672a69e463",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Imagine you are a employee at a insurance company in the customer support and you are chatting with a customer. You get the following message from the customer.\n\"{{ $json.Text }}\n{{ $json.user_message }}\n{{ $json.user_message }}\n\"\n\nEvaluate the information you got from the customer. If you think it contains something for the json, use it for it.\n\nYou need to collect all the information you have to put into the following JSON.\n\nThe Cause has the following labels: ChangeAdress, ClaimPolicy, \n\n\n{\n  \"PolicyID\": \"POLICY_ID_HERE\",\n  \"Cause\": \"CAUSE_ID_HERE\"\n}\n\n\nThe PolicyID has a Prefix \"POL-\" followed by 3 numbers. The user can write it with our without the prefix.\n\nOnly Output the JSON! If you are not sure about the PolicyID leave it empty\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1296,
+        -160
+      ],
+      "id": "3fd00b92-66db-4e6e-a507-f7eaaddeefca",
+      "name": "JSON COLLECTOR",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.chatId }}",
+        "contextWindowLength": 3
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1200,
+        48
+      ],
+      "id": "9f79fd14-4ec0-489d-a75a-26535336a25e",
+      "name": "Simple Memory4"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1296,
+        48
+      ],
+      "id": "72c39339-14ad-4fa2-ad00-b31e3383ef2e",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "692c4788-f823-4a5f-abb2-11330d0086fe",
+              "name": "PolicyID",
+              "value": "={{ $json.PolicyID }}",
+              "type": "string"
+            },
+            {
+              "id": "c3d04f84-7a2a-4018-81b0-cef7adcdcc5f",
+              "name": "Cause",
+              "value": "={{ $json.Function }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -480,
+        -320
+      ],
+      "id": "e79cb8e1-b188-4aa2-8ff6-92f84266e236",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "db042acc-322d-4e5a-ac03-825b86a88bdf",
+              "leftValue": "={{ $json.PolicyID }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "83573714-7032-4828-ac8c-897250be357e",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -784,
+        -160
+      ],
+      "id": "31b0a140-1c3e-4804-96ec-559f6f336335",
+      "name": "PolicyID1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f901eaf1-b22b-4cc0-8426-fbcfb2a16937",
+              "leftValue": "={{ $json.Function }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -784,
+        -448
+      ],
+      "id": "0e353bf3-8f2f-4391-823c-ddd5abde0c6f",
+      "name": "Cause"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblqk1W4U1Lvyq8BM",
+          "mode": "list",
+          "cachedResultName": "Policies",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tblqk1W4U1Lvyq8BM"
+        },
+        "filterByFormula": "={Policy ID} = '{{ $json.PolicyID }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        96,
+        -256
+      ],
+      "id": "2d7b34bb-01d8-4eee-aad5-f0f8ed59733b",
+      "name": "Search records1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Imagine you are a employee at a insurance company in the customer support and you are chatting with a customer. The Customer answered and have put in a wrond policy number. Ask the customer again for the correct number. The JSON looks like this:\n\n\nOutput only the answere which will be send to the customer.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        400,
+        48
+      ],
+      "id": "da666992-f170-40ee-9481-3170dd6233d3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Merge').item.json.chatID }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        48
+      ],
+      "id": "4887f8f7-8edf-435f-b213-21df480eb8f0",
+      "name": "Debuggin2",
+      "webhookId": "33736cf3-a10b-432d-a32a-86be4ec1c25e",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1248,
+        48
+      ],
+      "id": "895ecc94-604b-4ffb-9c1b-4a3970c16cf3",
+      "name": "Wait2",
+      "webhookId": "93303454-b543-4500-9c74-0f4b89635208"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl1D2LY3VvpkNKwM",
+          "mode": "list",
+          "cachedResultName": "Session",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tbl1D2LY3VvpkNKwM"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ChatID": "={{ $('Merge').item.json.chatId }}",
+            "ResumeURL": "={{ $json.resumeUrl }}",
+            "State": "waiting"
+          },
+          "matchingColumns": [
+            "ChatID"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "ChatID",
+              "displayName": "ChatID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "State",
+              "displayName": "State",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ResumeURL",
+              "displayName": "ResumeURL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "updateAllMatches": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1072,
+        48
+      ],
+      "id": "41676cda-4c1f-46b0-a01d-2f06e41c6b9c",
+      "name": "Create or update a record2",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cf834600-2b9f-414a-805b-a99cb41c66be",
+              "name": "resumeUrl",
+              "value": "={{ $execution.resumeUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        912,
+        48
+      ],
+      "id": "d24e3c24-032a-43e5-9c45-801b9bf57a42",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f31d5e26-c4e4-4705-8d41-1d73e2702026",
+              "leftValue": "={{ $json['Policy ID'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        368,
+        -256
+      ],
+      "id": "41938d50-ffd5-428e-b810-71b5b1df5555",
+      "name": "IFCorrectPolicyID"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        400,
+        256
+      ],
+      "id": "672800fb-de60-46a7-9ab7-949d6c3e4581",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Merge').item.json.chatID }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        496,
+        256
+      ],
+      "id": "f4e8faf9-4f13-43a8-88ed-f77cb0eb5f90",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nreturn [{ json: { chatId: body.chatId, user_message: (body.text || '').trim(), raw: body } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1424,
+        48
+      ],
+      "id": "c32351c2-2550-49d9-9186-9afb364352b8",
+      "name": "WrongPolicyID"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nreturn [{ json: { chatId: body.chatId, user_message: (body.text || '').trim(), raw: body } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        64
+      ],
+      "id": "a8343927-958f-41ff-8130-5f246b206d63",
+      "name": "MissingValues"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cdab7549-d125-484b-8f7b-313147733703",
+              "leftValue": "={{ $json.PolicyID }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "1cede8d0-3b66-490c-8286-3f7cf801db88",
+              "leftValue": "={{ $json.Cause }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -304,
+        -240
+      ],
+      "id": "fa293e99-724e-45f2-a63d-b709cb0772c4",
+      "name": "Check for cause and policyid"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7aea9617-bdff-4072-b290-5ebcd2e3437b",
+                    "leftValue": "={{ $('Check for cause and policyid').item.json.Cause }}",
+                    "rightValue": "ChangeAddress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1040,
+        -464
+      ],
+      "id": "0d449bc3-759c-45a0-a7e6-0bc35d6897a1",
+      "name": "route to causes"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Imagine you are a employee at a insurance company in the customer support and you are chatting with a customer. You get the following message of the customer:\n\nYou need the Adress of the customer. If the message or the previous chat contains a possbile Adress, then please output a JSON in the following Format:\n\n{{ $('Merge').item.json.Text }}\n{{ $json.user_message }}\n\n\nIf you know the PolicyID and the customer want to change his address please Output in JSON Format like this: \n\n{\n  \"Street\": \"Street\",\n  \"City\": \"City\",\n  \"PostalCode\": \"PostalCode\",\n}\n\nIf you cant find anything, please Output \"NoAddress\"\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        -464
+      ],
+      "id": "d939bd8f-7dc4-4bf4-9882-e4c3ac499996",
+      "name": "AI Agent4"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        -272
+      ],
+      "id": "5d72ac45-e227-44e0-9294-e6690da71c04",
+      "name": "Google Gemini Chat Model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d2f5896c-2a4b-4839-93a5-710625188a58",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "NoAddress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notContains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "HasAddress"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "NoAddress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "a6114938-f50f-4319-b1b6-d776fe2774fc"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "NoAddress"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1520,
+        -448
+      ],
+      "id": "aa28a5ba-9eaa-4589-9de3-dc13ab8107a5",
+      "name": "Switch4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Erwartet pro Item ein Feld `ai_output` (String ODER Objekt) + irgendwo eine PolicyID.\n// Gibt pro Item einen flachen JSON-Payload zurück:\n// { \"ChangeAddress\", Street, City, PostalCode }\n\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  return s\n    .replace(/^```(?:json)?\\s*/i, '')\n    .replace(/```$/, '');\n}\n\nfunction fixTrailingCommas(s) {\n  if (typeof s !== 'string') return s;\n  // Entfernt abschließende Kommata vor schließenden Klammern/Braces\n  return s.replace(/,\\s*([}\\]])/g, '$1');\n}\n\nfunction normalizeQuotes(s) {\n  if (typeof s !== 'string') return s;\n  // Smart Quotes → normale Anführungszeichen\n  return s.replace(/[“”]/g, '\"').replace(/[‘’]/g, \"'\");\n}\n\nfunction tryParseLenient(input) {\n  if (typeof input !== 'string') return input;\n  let s = input.trim();\n  s = stripCodeFences(s);\n  s = normalizeQuotes(s);\n  s = fixTrailingCommas(s);\n  try {\n    return JSON.parse(s);\n  } catch {\n    return null;\n  }\n}\n\nfunction extractFromLooseText(text) {\n  if (typeof text !== 'string') return { Street: '', City: '', PostalCode: '' };\n\n  const get = (patterns) => {\n    for (const p of patterns) {\n      const m = text.match(p);\n      if (m && m[1]) return m[1].trim();\n    }\n    return '';\n  };\n\n  const Street = get([\n    /\"Street\"\\s*:\\s*\"([^\"]+)\"/i,\n    /Street\\s*[:=]\\s*([^,\\n]+)\\b/i,\n    /\"address\"\\s*:\\s*\"([^\"]+)\"/i,\n    /address\\s*[:=]\\s*([^,\\n]+)\\b/i,\n  ]);\n\n  const City = get([\n    /\"City\"\\s*:\\s*\"([^\"]+)\"/i,\n    /City\\s*[:=]\\s*([^,\\n]+)\\b/i,\n    /\"town\"\\s*:\\s*\"([^\"]+)\"/i,\n    /town\\s*[:=]\\s*([^,\\n]+)\\b/i,\n  ]);\n\n  const PostalCode = get([\n    /\"PostalCode\"\\s*:\\s*\"([^\"]+)\"/i,\n    /PostalCode\\s*[:=]\\s*([A-Za-z0-9\\- ]+)/i,\n    /\"zip(code)?\"\\s*:\\s*\"([^\"]+)\"/i,\n    /zip(code)?\\s*[:=]\\s*([A-Za-z0-9\\- ]+)/i,\n    /\"plz\"\\s*:\\s*\"([^\"]+)\"/i,\n    /plz\\s*[:=]\\s*([A-Za-z0-9\\- ]+)/i,\n  ]);\n\n  return { Street, City, PostalCode };\n}\n\nfunction pickFirst(...vals) {\n  for (const v of vals) {\n    if (v !== undefined && v !== null && String(v).trim() !== '') return String(v).trim();\n  }\n  return '';\n}\n\nreturn items.map(item => {\n  const src = item.json.ai_output ?? item.json.output ?? item.json.ai ?? item.json; // wo die Agent-Antwort liegt\n\n  // PolicyID bestimmen (Pfad anpassen, falls nötig)\n  const policyFromContext = pickFirst(\n    item.json.policyId,\n    item.json.PolicyID,\n    (typeof src === 'object' && src) ? src.policyId : undefined,\n    (typeof src === 'object' && src) ? src.PolicyID : undefined,\n  );\n\n  let obj = null;\n\n  // A) Bereits Objekt?\n  if (src && typeof src === 'object' && ('Street' in src || 'City' in src || 'PostalCode' in src)) {\n    obj = src;\n  }\n\n  // B) JSON-String → lenient parsen\n  if (!obj && typeof src === 'string') {\n    const parsed = tryParseLenient(src);\n    if (parsed && typeof parsed === 'object') obj = parsed;\n  }\n\n  // C) Fallback: Freitext extrahieren\n  let Street = '';\n  let City = '';\n  let PostalCode = '';\n\n  if (obj) {\n    // Synonyme/alternative Keys berücksichtigen\n    Street = pickFirst(obj.Street, obj.street, obj.Address, obj.address, obj.streetAddress, obj[\"Street Address\"]);\n    City = pickFirst(obj.City, obj.city, obj.Town, obj.town);\n    PostalCode = pickFirst(obj.PostalCode, obj.postalCode, obj.zip, obj.zipcode, obj.ZIP, obj.plz, obj.PLZ);\n  } else {\n    const text = typeof src === 'string' ? src : String(src ?? '');\n    const ext = extractFromLooseText(text);\n    Street = ext.Street;\n    City = ext.City;\n    PostalCode = ext.PostalCode;\n  }\n\n  // Minimal-Validierung\n  if (!Street || !City || !PostalCode) {\n    // Für Debugging hilfreich:\n    // throw new Error(`Adresse unvollständig. Street=\"${Street}\", City=\"${City}\", PostalCode=\"${PostalCode}\". Quelle: ${typeof src === 'string' ? src.slice(0, 500) : JSON.stringify(src)}`);\n    // Statt Fehler: leere Felder zulassen – passe nach Bedarf an:\n  }\n\n\n  return {\n    json: {\n      Street,\n      City,\n      PostalCode\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1888,
+        -464
+      ],
+      "id": "a6271ac2-c239-436e-b2d2-5e70165977ce",
+      "name": "Put JSON into variables1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDtkAbRrVkukzpm",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tblDtkAbRrVkukzpm"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Address": "={{ $json.Street }}",
+            "Zip_Code": "={{ $json.PostalCode }}",
+            "Customer ID": "={{ $('Search records1').item.json['Customer ID'] }}",
+            "Active Policies": 0,
+            "City": "={{ $json.City }}"
+          },
+          "matchingColumns": [
+            "Customer ID"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Zip_Code",
+              "displayName": "Zip_Code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "City",
+              "displayName": "City",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language Preference",
+              "displayName": "Language Preference",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "English",
+                  "value": "English"
+                },
+                {
+                  "name": "Spanish",
+                  "value": "Spanish"
+                },
+                {
+                  "name": "Mandarin",
+                  "value": "Mandarin"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Active Policies",
+              "displayName": "Active Policies",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Customer ID",
+              "displayName": "Customer ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2096,
+        -464
+      ],
+      "id": "ae8d69e4-6c34-465a-9390-a60e53aa330d",
+      "name": "Update record1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Merge').item.json.chatId }}",
+        "text": "=We have changed your Address to:\n{{ $json.fields.Address }}\n{{ $json.fields.City }}\n{{ $json.fields.Zip_Code }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML",
+          "reply_to_message_id": 0,
+          "message_thread_id": 0
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2320,
+        -464
+      ],
+      "id": "40677ebb-4f1d-42db-a816-813af4192d49",
+      "name": "Confirmation of Changing the Address1",
+      "webhookId": "d722c90c-2405-4a1e-b11d-0aadd9d61b84",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Imagine you are a employee at a insurance company in the customer support and you are chatting with a customer. Ask the customer for his Address. Only output the answere directly to the customer\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1728,
+        -192
+      ],
+      "id": "da60b0bd-ea76-404f-a655-45828e128a93",
+      "name": "AI Agent6"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Merge').item.json.chatId }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2048,
+        -192
+      ],
+      "id": "0cc54ffe-1567-4498-bc47-c0d6e88852e2",
+      "name": "Debuggin3",
+      "webhookId": "33736cf3-a10b-432d-a32a-86be4ec1c25e",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2576,
+        -192
+      ],
+      "id": "4f7ac16a-c5ee-49a2-bd67-4119d7a63b74",
+      "name": "Wait3",
+      "webhookId": "93303454-b543-4500-9c74-0f4b89635208"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl1D2LY3VvpkNKwM",
+          "mode": "list",
+          "cachedResultName": "Session",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tbl1D2LY3VvpkNKwM"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ChatID": "={{ $('Merge').item.json.chatId }}",
+            "ResumeURL": "={{ $json.resumeUrl }}",
+            "State": "waiting"
+          },
+          "matchingColumns": [
+            "ChatID"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "ChatID",
+              "displayName": "ChatID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "State",
+              "displayName": "State",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ResumeURL",
+              "displayName": "ResumeURL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "updateAllMatches": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2400,
+        -192
+      ],
+      "id": "7ec442d5-e29d-4cd0-ade8-4ae000387c88",
+      "name": "Create or update a record3",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cf834600-2b9f-414a-805b-a99cb41c66be",
+              "name": "resumeUrl",
+              "value": "={{ $execution.resumeUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2240,
+        -192
+      ],
+      "id": "eea6dc57-348c-41e0-8b27-a8d55f7826e6",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1728,
+        16
+      ],
+      "id": "43f4e315-dd34-4f83-8f80-470bc5dbe4f6",
+      "name": "Google Gemini Chat Model7",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nreturn [{ json: { chatID: body.chatId, user_message: (body.text || '').trim(), raw: body } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2752,
+        -192
+      ],
+      "id": "d61f28cc-6bae-4917-ab30-9acc02ebe571",
+      "name": "AddressEntry"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Merge').item.json.chatId }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -624,
+        64
+      ],
+      "id": "5d25e139-633e-420a-92bf-8a1415fd51d5",
+      "name": "AskforSomething",
+      "webhookId": "33736cf3-a10b-432d-a32a-86be4ec1c25e",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Ask for customerID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask for customerID": {
+      "main": [
+        []
+      ]
+    },
+    "Transcribe a recording1": {
+      "main": [
+        []
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "JSON to Variables",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "JSON to Variables1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Negative: PolicyID Wrong",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "InputAddress",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Put JSON into variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Put JSON into variables": {
+      "main": [
+        [
+          {
+            "node": "Update record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update record": {
+      "main": [
+        [
+          {
+            "node": "Confirmation of Changing the Address",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON to Variables": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Debugging Positive: PolicyID found": {
+      "main": [
+        []
+      ]
+    },
+    "JSON to Variables1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Create or update a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create or update a record": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Debuggin": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Debuggin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "DEV INPUT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DEV INPUT": {
+      "main": [
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "JSON COLLECTOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON to Variables2": {
+      "main": [
+        [
+          {
+            "node": "PolicyID1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cause",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory5": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent5": {
+      "main": [
+        [
+          {
+            "node": "AskforSomething",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "MissingValues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create or update a record1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Create or update a record1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON COLLECTOR": {
+      "main": [
+        [
+          {
+            "node": "JSON to Variables2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory4": {
+      "ai_memory": [
+        [
+          {
+            "node": "JSON COLLECTOR",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "JSON COLLECTOR",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PolicyID1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Cause": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Check for cause and policyid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records1": {
+      "main": [
+        [
+          {
+            "node": "IFCorrectPolicyID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Debuggin2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Debuggin2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "WrongPolicyID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create or update a record2": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Create or update a record2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IFCorrectPolicyID": {
+      "main": [
+        [
+          {
+            "node": "route to causes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WrongPolicyID": {
+      "main": [
+        [
+          {
+            "node": "PolicyID1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MissingValues": {
+      "main": [
+        [
+          {
+            "node": "JSON COLLECTOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for cause and policyid": {
+      "main": [
+        [
+          {
+            "node": "Search records1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "route to causes": {
+      "main": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent4": {
+      "main": [
+        [
+          {
+            "node": "Switch4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch4": {
+      "main": [
+        [
+          {
+            "node": "Put JSON into variables1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Put JSON into variables1": {
+      "main": [
+        [
+          {
+            "node": "Update record1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update record1": {
+      "main": [
+        [
+          {
+            "node": "Confirmation of Changing the Address1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent6": {
+      "main": [
+        [
+          {
+            "node": "Debuggin3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Debuggin3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "AddressEntry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create or update a record3": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Create or update a record3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent6",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AddressEntry": {
+      "main": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AskforSomething": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e61f625d-751c-4355-9d41-3925ca69565e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2709b3404872c07d50d3a3f2e05261bfc74b8f94c3e697b5d635899ec2c8637b"
+  },
+  "id": "mwq9gPl7I557dTt8",
+  "tags": []
+}

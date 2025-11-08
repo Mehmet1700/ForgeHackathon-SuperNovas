@@ -1,0 +1,400 @@
+{
+  "name": "Fixing the loop - Router",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2256,
+        448
+      ],
+      "id": "a4be0fd9-ce55-4baf-975e-23447607070d",
+      "name": "Telegram Trigger",
+      "webhookId": "3e678970-d275-4109-b627-3e218c403cc8",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl1D2LY3VvpkNKwM",
+          "mode": "list",
+          "cachedResultName": "Session",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tbl1D2LY3VvpkNKwM"
+        },
+        "filterByFormula": "=AND(\n  {ChatID} = '{{$json.message.chat.id}}',\n  {ResumeURL} != BLANK()\n)\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -1456,
+        448
+      ],
+      "id": "fe975601-bec2-454c-9657-22032699e0af",
+      "name": "look for chatid",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('look for chatid').item.json.ResumeURL }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -912,
+        432
+      ],
+      "id": "e31b15d1-2e66-4628-a7c0-8b5d7ecd1d65",
+      "name": "HTTP Request",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "mwq9gPl7I557dTt8",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/mwq9gPl7I557dTt8",
+          "cachedResultName": "FORGE Hackathon — Fixing the loop"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Text": "={{ $('Telegram Trigger').item.json.message.text }}",
+            "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}"
+          },
+          "matchingColumns": [
+            "chatID"
+          ],
+          "schema": [
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Text",
+              "displayName": "Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -912,
+        608
+      ],
+      "id": "aeb3e566-138c-4cdb-92fb-9ade327bf2fe",
+      "name": "Call 'Fixing the loop'"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.ResumeURL }}",
+                    "rightValue": "https",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "0264a6f3-c614-4cac-8a8d-7540d61855d2"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "372fe8a6-0d15-468d-95e1-290ced2c82fb",
+                    "leftValue": "={{ $json.ResumeURL }}",
+                    "rightValue": "empty",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -1184,
+        512
+      ],
+      "id": "e5499638-311e-4970-a855-c02330e58eda",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl1D2LY3VvpkNKwM",
+          "mode": "list",
+          "cachedResultName": "Session",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tbl1D2LY3VvpkNKwM"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ChatID": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+            "State": "=empty",
+            "ResumeURL": "="
+          },
+          "matchingColumns": [
+            "ChatID"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "ChatID",
+              "displayName": "ChatID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "State",
+              "displayName": "State",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ResumeURL",
+              "displayName": "ResumeURL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": false,
+          "updateAllMatches": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -688,
+        432
+      ],
+      "id": "834e993a-a720-4bbb-b242-bab5c90eb9e6",
+      "name": "Delete the value of resume",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "We deleted the URL",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        432
+      ],
+      "id": "2abe2063-c745-48d0-ba7f-a1498813016b",
+      "name": "Send a text message",
+      "webhookId": "4132cce7-6633-40fb-94ff-f85e2e0979a7",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "look for chatid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "look for chatid": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'Fixing the loop'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Delete the value of resume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete the value of resume": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c42a6517-71de-4bb7-82a5-81c6006f0891",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2709b3404872c07d50d3a3f2e05261bfc74b8f94c3e697b5d635899ec2c8637b"
+  },
+  "id": "75O8qsrP48a1EbR0",
+  "tags": []
+}

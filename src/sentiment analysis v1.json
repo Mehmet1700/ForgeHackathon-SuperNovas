@@ -1,0 +1,1539 @@
+{
+  "name": "sentiment analysis v1",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -20720,
+        15440
+      ],
+      "id": "88957dcb-42c5-4b96-88f8-c8196cf8c6b8",
+      "name": "Telegram Trigger",
+      "webhookId": "ab521c05-0269-4853-90b2-6678602a3895",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=Hello {{ $json.message.chat.first_name }}, we recieved your message.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -20816,
+        16480
+      ],
+      "id": "ec1a127f-4e36-426d-8075-a54871f429fe",
+      "name": "Send a text message",
+      "webhookId": "2e5edffe-db41-469c-826a-3c02865b6f02",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "944a4c09-59fb-4b76-8150-5d2266489bbd",
+              "leftValue": "={{ $('Telegram Trigger').item.json.message.voice }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -21696,
+        16112
+      ],
+      "id": "23f4f412-9426-4e4d-a3b5-a92db6262d59",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "944a4c09-59fb-4b76-8150-5d2266489bbd",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -21472,
+        16208
+      ],
+      "id": "f77a5cf1-78e9-4ec9-ac51-46345941d301",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=We recieved a audio message",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -21472,
+        16016
+      ],
+      "id": "4a2c97db-e272-4e4d-80ce-0d89e15d36a5",
+      "name": "Debugging for Audio message",
+      "webhookId": "73703f69-c45d-48e5-ae6e-9321bce04d40",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=You have sent a text message",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -21248,
+        16192
+      ],
+      "id": "2e094616-1f26-425a-ba36-35eb2c57d09f",
+      "name": "Debugging for Text Message",
+      "webhookId": "c04b43ba-9b4e-43b2-89cd-9bf0682eb1f1",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').item.json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -21248,
+        16016
+      ],
+      "id": "68208321-0b59-4c2a-b27a-6616d4e56e92",
+      "name": "Get a file",
+      "webhookId": "5cdf993d-d509-42ea-abdb-db551c582528",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -21024,
+        16016
+      ],
+      "id": "b46a0144-aabd-431d-9c37-89dfe71b9827",
+      "name": "Transcribe a recording1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You get the following message from a customer:\"{{ $json.content.parts[0].text }}\"\n\nAdditionally you get the following information of the customer:\n\nfirst_name: {{ $('Telegram Trigger').item.json.message.chat.first_name }}\n\nusername: {{ $('Telegram Trigger').item.json.message.chat.username }}\n\nlanguage_code: {{ $('Telegram Trigger').item.json.message.from.language_code }}\n\ntelegram_id: {{ $('Telegram Trigger').item.json.message.from.id }}\n\nBased on the information write an answer to ask for the customer ID. Only output the answer."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -20800,
+        16016
+      ],
+      "id": "6edc024d-5634-4d60-b0b2-b511d1d29fb3",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appFzNCLQCfEF5zjt",
+          "mode": "list",
+          "cachedResultName": "InsurTech Hackathon",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblqk1W4U1Lvyq8BM",
+          "mode": "list",
+          "cachedResultName": "Policies",
+          "cachedResultUrl": "https://airtable.com/appFzNCLQCfEF5zjt/tblqk1W4U1Lvyq8BM"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -19616,
+        16016
+      ],
+      "id": "4524e2dc-0d69-46c3-9e36-6c91bc32b106",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}\n",
+        "text": "={{ $json.content.parts[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML",
+          "reply_to_message_id": 0,
+          "message_thread_id": 0
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -20432,
+        16016
+      ],
+      "id": "b207edb9-0f15-441d-a100-350c36d6b5be",
+      "name": "Ask for customerID",
+      "webhookId": "41f592af-bba3-490f-9aa9-0cf25c7eb962",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "form",
+        "formTitle": "Customer ID Verification",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "customerID"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -20192,
+        16016
+      ],
+      "id": "5a6bfadc-ac99-4d8a-84d7-7d909af7cef1",
+      "name": "Wait",
+      "webhookId": "a6089109-41fe-443d-9b90-d9ae5f8fb08c"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "you have to check if the ID provided is inside the  database\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -19968,
+        16016
+      ],
+      "id": "ccac6ed8-7c2f-44e8-9a29-9063872ea272",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Search records').all().some(item => Object.values(item.json.fields || {}).includes($('Wait').item.json.customerID)) }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "aeceda32-c1b4-4627-b429-17eb10f78e35",
+      "name": "Check if Customer ID Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -19424,
+        16016
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "ID verified, what do you want to do? Change your data or claim the insurance?",
+        "additionalFields": {}
+      },
+      "id": "10e22ccb-c10e-4123-955b-cb002de1477d",
+      "name": "Ask User Intent",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -19152,
+        16000
+      ],
+      "webhookId": "aab628ed-4fc2-40ac-8c17-eafd0886377c",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "form",
+        "formTitle": "Choose Action",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Choice"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8cbbf805-88f0-4814-9097-d81b62ce3997",
+      "name": "Wait for User Choice",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -18976,
+        16000
+      ],
+      "webhookId": "a2f23db3-a00e-4f3c-8c13-e77e6dfaf244"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Validate User Choice').item.json.content.parts[0].text }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "17a33f65-bbb7-43d7-9c19-3180e8ff8643",
+      "name": "Route Based on Choice",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -18240,
+        15808
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblqk1W4U1Lvyq8BM"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "a79087fc-8141-47a6-a830-74d69fad09b2",
+      "name": "Update Database Record",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -16384,
+        15632
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Database record has been successfully updated!",
+        "additionalFields": {}
+      },
+      "id": "936b0073-a652-4db3-9552-f4df148e4d46",
+      "name": "Confirm Database Update",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -16016,
+        15632
+      ],
+      "webhookId": "a8beadcd-245b-4ab5-8e7b-172b9c64c2ca",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Your insurance claim has been initiated. Our team will contact you shortly.",
+        "additionalFields": {}
+      },
+      "id": "146f3904-c9c4-4330-a614-f2568ba0b8a6",
+      "name": "Process Insurance Claim",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -16432,
+        15808
+      ],
+      "webhookId": "1ec81717-2fb8-4317-83b6-68b91e264718",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Sorry, the customer ID you provided was not found in our database. Please verify and try again.",
+        "additionalFields": {}
+      },
+      "id": "87a5ed31-8cca-4c04-ad14-bd3873be252c",
+      "name": "Customer ID Not Found",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -19376,
+        16224
+      ],
+      "webhookId": "0d614052-cf14-4652-b725-0d030835b374",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "models/gemini-2.0-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Analyze the user's choice: {{ $('Wait for User Choice').item.json.choice }}. Determine if they want to: 1) Change/update their data, or 2) File/claim insurance. Return ONLY \"1\" for data change or \"2\" for insurance claim. If unclear, return \"invalid\"."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "40e48e35-4894-4ef6-a3a0-e05ca149927c",
+      "name": "Validate User Choice",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -18832,
+        16000
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.content.parts[0].text }}",
+              "rightValue": "invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "155e0c09-caa5-432a-9246-1eded643a5cf",
+      "name": "Check Valid Choice",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -18464,
+        16000
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "I didn't understand your choice. Please specify: Do you want to change your data or claim insurance?",
+        "additionalFields": {}
+      },
+      "id": "37b7dcc4-36f9-4327-9772-04dde90c8923",
+      "name": "Invalid Choice Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -18176,
+        16256
+      ],
+      "webhookId": "93958504-8fca-4715-bbb3-fcd62afcf0eb",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Please provide your policy ID to proceed with the insurance claim.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "192ec32b-7019-4cc9-810b-14685e992b3a",
+      "name": "Ask for Policy ID",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -17840,
+        15824
+      ],
+      "webhookId": "f10ca524-5dd8-4fb4-b11a-9393931cd51c",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "form",
+        "formTitle": "Policy ID Verification",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "policyID"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a8dc5da2-2599-40d4-8bea-425f9deb73bf",
+      "name": "Wait for Policy ID",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -17536,
+        15824
+      ],
+      "webhookId": "0c64c5f9-fffb-4f13-aaff-839b0ee1fcc2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "models/gemini-2.0-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Validate the policy ID provided by the user"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ae997aaa-7b7d-4185-aaaf-10d43bb451f1",
+      "name": "Validate Policy ID",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -17344,
+        15824
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblqk1W4U1Lvyq8BM"
+        },
+        "options": {}
+      },
+      "id": "625180fb-c5b5-4238-bff9-5478583a66c3",
+      "name": "Search Policy Records",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -16992,
+        15824
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Search Policy Records').all().some(item => Object.values(item.json.fields || {}).includes($('Wait for Policy ID').item.json.policyID)) }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f4848c03-d262-4f0a-b9b8-4b02d3c8bb72",
+      "name": "Check if Policy ID Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -16736,
+        15824
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Sorry, the policy ID you provided was not found in our database. Please verify and try again.",
+        "additionalFields": {}
+      },
+      "id": "4715bc98-2ce6-4f8e-9db5-0d89f66e400a",
+      "name": "Policy ID Not Found",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -16432,
+        16000
+      ],
+      "webhookId": "21dfaa00-d1bb-476c-941f-e81a74837537",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Please provide which fields you want to change",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a57a9f6b-9da3-442c-9a2a-2399546ad524",
+      "name": "Ask for column to change",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -17840,
+        15632
+      ],
+      "webhookId": "f10ca524-5dd8-4fb4-b11a-9393931cd51c",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "form",
+        "formTitle": "Waiting for the fields",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "policyID"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "460f9d1b-ba3a-4e97-9fe9-864090832cb7",
+      "name": "Wait for the fields to be modified",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -17536,
+        15632
+      ],
+      "webhookId": "0c64c5f9-fffb-4f13-aaff-839b0ee1fcc2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "models/gemini-2.0-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "1ed40426-6ed4-4a38-be95-7ffec9c66537",
+      "name": "Validate Policy ID1",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -17344,
+        15632
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "appFzNCLQCfEF5zjt"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblqk1W4U1Lvyq8BM"
+        },
+        "options": {}
+      },
+      "id": "e44c74a9-ad4a-4d1f-a063-72b6e7256cd2",
+      "name": "Search in the columns if they exist",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -17008,
+        15632
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N9JjwdQ2EJOp9uMH",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Search Policy Records').all().some(item => Object.values(item.json.fields || {}).includes($('Wait for Policy ID').item.json.policyID)) }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c00cc058-987e-4ce0-890d-a0fe3b074298",
+      "name": "Check if the columns can be changed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -16768,
+        15376
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output || $json.data?.output || JSON.stringify($json, null, 2) }}\n\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -19600,
+        15456
+      ],
+      "id": "ca95c830-b468-4155-ad37-e05e60b54a30",
+      "name": "Send a text message1",
+      "webhookId": "5cd442d7-42ec-4bfd-b289-0bea2799fd35",
+      "credentials": {
+        "telegramApi": {
+          "id": "FlugRxM3CZejByuJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      textForHF: $json.message.text,\n      chatId: $json.message.chat.id\n    }\n  }\n];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20496,
+        15440
+      ],
+      "id": "95d75258-b656-4475-b59b-49cae386635d",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a helpful and professional assistant working for an insurance company.\n\nUser message: {{$json.textForHF}}\nDetected sentiment: {{$json.sentimentAnalysis.category}}\n\nYour task:\nWrite a short, natural reply as if you were chatting with the customer.\nAdapt your tone according to the sentiment:\n- Positive → friendly and enthusiastic\n- Neutral → calm, professional, and informative\n- Negative → empathetic, reassuring, and solution-oriented\n\nStay relevant to insurance topics (claims, policies, support, etc.) when possible.\nOutput only the final reply text — no JSON, no code, no markdown.\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -19952,
+        15440
+      ],
+      "id": "2ef5740e-115a-4fcd-8f99-06593843d526",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -19952,
+        15616
+      ],
+      "id": "dc2e1e62-d951-4e20-be1e-b41a207f997d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{$json.textForHF}}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1.1,
+      "position": [
+        -20304,
+        15424
+      ],
+      "id": "ecab5c6d-7e3e-42d3-961b-187eb5c5a0b7",
+      "name": "Sentiment Analysis"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -20272,
+        15616
+      ],
+      "id": "f7b21933-32bf-4702-bfae-63e20f2b34c9",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EJQ3gzROb1XSD6YT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Debugging for Audio message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Debugging for Text Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Debugging for Audio message": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Ask for customerID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask for customerID": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Check if Customer ID Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Customer ID Exists": {
+      "main": [
+        [
+          {
+            "node": "Ask User Intent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Customer ID Not Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask User Intent": {
+      "main": [
+        [
+          {
+            "node": "Wait for User Choice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for User Choice": {
+      "main": [
+        [
+          {
+            "node": "Validate User Choice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Based on Choice": {
+      "main": [
+        [
+          {
+            "node": "Ask for column to change",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ask for Policy ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Database Record": {
+      "main": [
+        [
+          {
+            "node": "Confirm Database Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer ID Not Found": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate User Choice": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Choice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Choice": {
+      "main": [
+        [
+          {
+            "node": "Route Based on Choice",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Invalid Choice Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Invalid Choice Message": {
+      "main": [
+        [
+          {
+            "node": "Ask User Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask for Policy ID": {
+      "main": [
+        [
+          {
+            "node": "Wait for Policy ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Policy ID": {
+      "main": [
+        [
+          {
+            "node": "Validate Policy ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Policy ID": {
+      "main": [
+        [
+          {
+            "node": "Search Policy Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Policy Records": {
+      "main": [
+        [
+          {
+            "node": "Check if Policy ID Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Policy ID Exists": {
+      "main": [
+        [
+          {
+            "node": "Process Insurance Claim",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Policy ID Not Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Policy ID Not Found": {
+      "main": [
+        [
+          {
+            "node": "Wait for Policy ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask for column to change": {
+      "main": [
+        [
+          {
+            "node": "Wait for the fields to be modified",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for the fields to be modified": {
+      "main": [
+        [
+          {
+            "node": "Validate Policy ID1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Policy ID1": {
+      "main": [
+        [
+          {
+            "node": "Search in the columns if they exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in the columns if they exist": {
+      "main": [
+        [
+          {
+            "node": "Check if the columns can be changed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if the columns can be changed": {
+      "main": [
+        [
+          {
+            "node": "Update Database Record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ask for column to change",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Ask for customerID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ed7e05b1-68a3-41d3-9d58-1369dc087874",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2709b3404872c07d50d3a3f2e05261bfc74b8f94c3e697b5d635899ec2c8637b"
+  },
+  "id": "JOTdZEQdwsTZtIBO",
+  "tags": []
+}
